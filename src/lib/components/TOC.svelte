@@ -1,6 +1,6 @@
  <script>
     let { groups, currentGroup} = $props();
-    import { processContent, getGroupReferences } from '$lib/utils.js';
+    import { getGroupReferences } from '$lib/utils.js';
 
  </script>
  <!-- Table of Contents -->
