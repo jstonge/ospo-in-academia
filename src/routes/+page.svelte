@@ -21,13 +21,17 @@ We identify key challenges
 
 ---
 
-## Estimate efforts in FOSS projects
+## 1. Estimating efforts in F/OSS research projects
+
+Here we provide a few examples of projects that are easy, medium, and hard to do. The goal is to help RSEs to estimate the level of effort required to accomplish the project goals.
 
 ### Easy
 
-#### vermonticksticks
+Easy is perhaps a slighly misleading label. You only really know how easy a project is once you have done it.
 
-`} />
+#### Vermontick's ticks
+
+`} {plugins}/>
 
 <span class="tag">#deliverable</span>
 
@@ -40,7 +44,8 @@ The plan does not involve mentorship on the behalf of the RSE. Once the project 
 
 As a product, this map is estimated to be fairly easy to do, given what has been agreed in the research proposal (the current effort bet is around 5-10 RSE-hours for a working prototype, but can involve more effort if the map ought to be more polished).
 
-The product seems easy enough to do because it is a single-web app page, including a map of Vermont with a few widgets (activity, vector type, model type). That said, the RSE identified two aspects of the project that could be more time consuming to implement, based on his experience. 
+The product seems easy enough to do because it is a single-web app page, including a map of Vermont with a few widgets (activity, vector type, model type). That said, the RSE identified two aspects of the project that could be more time consuming to implement, based on his experience:
+
 - Making sure the Application Programming Interface has access to hourly/daily weather data.
 - The API data should be then used in models developed by the team. The back and forth depending on the particular models used, and predictive performance in this case, could require some more efforts to fine-tune.
 
@@ -60,7 +65,7 @@ Once the app has been deployed, the RSE doesn't take responsibility of developin
 
 
 <div class="callout warning">
-    <strong>💡 Project going sideways:</strong>
+    <strong>⚠ Project going sideways:</strong>
     A key challenge academics are facing when doing computational works is that they rarely know in advance what is going to be the scope of the work. This can lead to the project going sideways in a different ways.   The scope might be "clear", in the sense that stakeholders know in a vague way what they want, but the expectations are not realists. That is, the "true" level of expertise or work required to accomplish the projects' goals are beyond current level of expertise. This can be a good learning opportunity for students, an important source of frustation, or both. Consider a case where the MAP2LE team didn't realize, but the data is ungainly and large. As such, the data pipeline would benefit from building a [[Postgres]] database that the web interface could query. Furthermore, it wasn't clear before, but the model the MAP2LE team had in mind won't work, or perhaps the inference they want to make are not doable, given the data they currently have. A student could take on herself to fix both problems, leading to unreasonable level of expectations, while stakeholders don't see the effort required in fixing both problems. Setting up a database is a nontrivial task to do when it is a first time, especially when students are not coming from a computer science background.
   </div>
 
