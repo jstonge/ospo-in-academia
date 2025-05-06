@@ -2,8 +2,10 @@
     import Markdown from 'svelte-exmarkdown';
     import { gfmPlugin } from 'svelte-exmarkdown/gfm';
     import Scrolly from './Scrolly.svelte';
-    import { insertReferenceMarkers, processContent, getGroupReferences } from '$lib/utils.js';
+    import { processContent, getGroupReferences } from '$lib/utils.js';
     import { base } from '$app/paths';
+    import Toc from './TOC.svelte';
+
     // Import the markdown data
     import markdownData from './markdownData.json';
     
@@ -11,16 +13,10 @@
     let currentGroup = $state(0);
     const plugins = [gfmPlugin()];
     
-    // Process image paths to handle SvelteKit paths
+    // Function to handle image paths
     function getImagePath(src) {
         if (!src) return '';
-        
-        // Add the base path if it exists
-        if (src.startsWith('/')) {
-            return `${base}${src}`;
-        }
-        
-        return src;
+        return src.startsWith('/') ? `${base}${src}` : src;
     }
 
     // Group sections by their group property
@@ -32,22 +28,15 @@
         groupMap[section.group].push(section);
     });
     
-    // Create an array of groups with their sections
-    const groups = Object.entries(groupMap).map(([groupId, sections], index) => {
-        return {
-            id: groupId,
-            index,
-            title: groupId === 'intro' ? 'Introduction' : 'Estimating Efforts',
-            sections
-        };
-    });
+    // Create array of groups
+    const groups = Object.entries(groupMap).map(([groupId, sections], index) => ({
+        id: groupId,
+        index,
+        title: groupId === 'intro' ? 'Introduction' : 'Estimating Efforts',
+        sections
+    }));
     
-    // Run the reference marker insertion after component is mounted
-    $effect(() => {
-        insertReferenceMarkers();
-    });
-    
-    // Handle image zoom functionality
+    // Image zoom functionality
     let zoomedImage = $state(null);
     
     function openImageModal(image) {
@@ -60,68 +49,20 @@
 </script>
 
 <div class="container">
-    <aside class="toc">
-        <h2>Contents</h2>
-        <ul>
-            {#each groups as group, i}
-                <li class="group" class:active={currentGroup === i}>
-                    <button 
-                        onclick={() => document.getElementById(group.id)?.scrollIntoView({ behavior: 'smooth' })}
-                    >
-                        {group.title}
-                    </button>
-                    {#if group.id === 'estimation'}
-                        <ul class="subgroup">
-                            {#each group.sections as section}
-                                <li class="section">
-                                    <a 
-                                        href={`#${section.id}`}
-                                        onclick={(e) => {
-                                            e.preventDefault();
-                                            document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' });
-                                        }}
-                                    >
-                                        {section.title}
-                                    </a>
-                                </li>
-                            {/each}
-                            <li class="section">
-                                <a 
-                                    href="#est-references"
-                                    onclick={(e) => {
-                                        e.preventDefault();
-                                        document.getElementById('est-references')?.scrollIntoView({ behavior: 'smooth' });
-                                    }}
-                                >
-                                    References
-                                </a>
-                            </li>
-                        </ul>
-                    {/if}
-                </li>
-            {/each}
-        </ul>
-    </aside>
+   <!-- TOC -->
+    <Toc {groups} {currentGroup} />
 
+    <!-- Main Content -->
     <main>
         <Scrolly bind:value={currentGroup} top={100} bottom={100}>
             {#each groups as group, groupIndex}
-                <div 
-                    id={group.id} 
-                    class="group-content" 
-                    class:active={currentGroup === groupIndex}
-                >
+                <div id={group.id} class="group-content" class:active={currentGroup === groupIndex}>
                     <section class="content-section">
                         {#if group.id === 'intro'}
-                            <!-- Get all references for this group -->
-                            {@const groupRefs = getGroupReferences(group)}
-                            
-                            <!-- Render introduction content -->
+                            <!-- Introduction content -->
                             {#each group.sections[0].content as block}
                                 {#if block.type === 'markdown'}
-                                    <!-- Process the content -->
-                                    {@const processedContent = processContent(block.data, group.sections[0].references || [])}
-                                    <Markdown md={processedContent} {plugins} />
+                                    <Markdown md={processContent(block.data, [])} {plugins} />
                                 {:else if block.type === 'callout'}
                                     <div class="callout {block.data.type}">
                                         <strong>{block.data.icon} {block.data.title}: </strong> 
@@ -131,7 +72,7 @@
                                     <figure class="figure">
                                         <div class="image-container">
                                             <img 
-                                                src={block.data.src} 
+                                                src={getImagePath(block.data.src)} 
                                                 alt={block.data.alt} 
                                                 style={`max-width: ${block.data.width}px;`}
                                                 onclick={() => openImageModal(block.data)}
@@ -152,43 +93,37 @@
                                 {/if}
                             {/each}
                             
-                            <!-- Render references for the introduction -->
-                            {#if groupRefs.length > 0}
+                            <!-- Introduction references -->
+                            {@const introRefs = getGroupReferences(group)}
+                            {#if introRefs.length > 0}
                                 <div id="intro-references" class="references">
                                     <h2>References</h2>
                                     <ol class="reference-list">
-                                        {#each groupRefs as ref}
+                                        {#each introRefs as ref}
                                             <li id={`ref-${ref.id}`}>
-                                                {ref.citation} 
-                                                <a href={`#ref-src-${ref.id}`} class="back-link">↩</a>
+                                                {ref.citation}
                                             </li>
                                         {/each}
                                     </ol>
                                 </div>
                             {/if}
                         {:else}
-                            <!-- Get all references for this group -->
-                            {@const groupRefs = getGroupReferences(group)}
-                            
-                            <!-- Render estimation sections in a unified block -->
+                            <!-- Estimation sections -->
                             {#each group.sections as section}
                                 <div id={section.id} class="section-anchor">
                                     {#each section.content as block}
                                         {#if block.type === 'markdown'}
-                                            <!-- Process the content -->
-                                            {@const processedContent = processContent(block.data, section.references || [])}
-                                            <Markdown md={processedContent} {plugins} />
+                                            <Markdown md={processContent(block.data, [])} {plugins} />
                                         {:else if block.type === 'callout'}
                                             <div class="callout {block.data.type}">
                                                 <strong>{block.data.icon} {block.data.title}: </strong> 
                                                 {block.data.content}
                                             </div>
                                         {:else if block.type === 'image'}
-                                            {@const imgSrc = getImagePath(block.data.src)}
                                             <figure class="figure">
                                                 <div class="image-container">
                                                     <img 
-                                                        src={imgSrc} 
+                                                        src={getImagePath(block.data.src)} 
                                                         alt={block.data.alt} 
                                                         style={`max-width: ${block.data.width}px;`}
                                                         onclick={() => openImageModal(block.data)}
@@ -211,15 +146,15 @@
                                 </div>
                             {/each}
                             
-                            <!-- Render references for the estimation group -->
-                            {#if groupRefs.length > 0}
+                            <!-- Estimation references -->
+                            {@const estRefs = getGroupReferences(group)}
+                            {#if estRefs.length > 0}
                                 <div id="est-references" class="references">
                                     <h2>References</h2>
                                     <ol class="reference-list">
-                                        {#each groupRefs as ref}
+                                        {#each estRefs as ref}
                                             <li id={`ref-${ref.id}`}>
-                                                {ref.citation} 
-                                                <a href={`#ref-src-${ref.id}`} class="back-link">↩</a>
+                                                {ref.citation}
                                             </li>
                                         {/each}
                                     </ol>
@@ -232,7 +167,7 @@
         </Scrolly>
     </main>
     
-    <!-- Image modal for zoomed view -->
+    <!-- Image modal -->
     {#if zoomedImage}
         <div class="modal-backdrop" onclick={closeImageModal}>
             <div class="modal-content" onclick={e => e.stopPropagation()}>
@@ -277,10 +212,6 @@
         border-left: 3px solid transparent;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
-    
-    /* .group-content.active .content-section {
-        border-left-color: #3b82f6;
-    } */
     
     .section-anchor {
         scroll-margin-top: 2rem;
@@ -440,30 +371,6 @@
         color: #4b5563;
     }
     
-    .back-link {
-        display: inline-block;
-        margin-left: 0.5rem;
-        font-size: 0.8rem;
-        color: #3b82f6;
-        text-decoration: none;
-    }
-    
-    /* Reference markers */
-    :global(.ref-marker) {
-        font-size: 0.7rem;
-        vertical-align: super;
-    }
-    
-    :global(.ref-marker a) {
-        color: #2563eb;
-        text-decoration: none;
-        padding: 0 1px;
-    }
-    
-    :global(.ref-marker a:hover) {
-        text-decoration: underline;
-    }
-    
     /* Table of Contents */
     .toc {
         position: sticky;
@@ -475,66 +382,11 @@
         border-radius: 0.5rem;
     }
     
-    .toc h2 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-top: 0;
-        margin-bottom: 1rem;
-        color: #111827;
-    }
-    
-    .toc ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    
-    .toc li {
-        margin-bottom: 0.5rem;
-    }
-    
-    /* Group styling */
-    .group button {
-        background: none;
-        border: none;
-        padding: 0.5rem;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #374151;
-        text-align: left;
-        width: 100%;
-        cursor: pointer;
-        border-radius: 0.25rem;
-        transition: all 0.2s ease;
-    }
-    
-    .group button:hover {
-        background-color: #f3f4f6;
-    }
-    
-    .group.active button {
-        color: #2563eb;
-    }
     
     /* Subgroup styling */
     .subgroup {
         padding-left: 1rem;
         margin-top: 0.5rem;
-    }
-    
-    .section a {
-        display: block;
-        padding: 0.3rem 0.5rem;
-        font-size: 0.875rem;
-        color: #6b7280;
-        text-decoration: none;
-        border-radius: 0.25rem;
-        transition: all 0.2s ease;
-    }
-    
-    .section a:hover {
-        background-color: #f3f4f6;
-        text-decoration: none;
     }
     
     /* Responsive */
