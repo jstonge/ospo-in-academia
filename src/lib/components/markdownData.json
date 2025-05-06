@@ -32,7 +32,7 @@
         "content": [
           {
             "type": "markdown",
-            "data": "# Estimating Project Difficulty\n\nWhen estimating project difficulty, consider the following factors:\n\n- **Complexity**: How many components or dependencies are involved?\n- **Clarity**: Are the requirements well-defined or fuzzy?\n- **Dependencies**: Are there external systems or teams involved?\n- **Timeframe**: What is the expected timeline for completion?\n\nThese factors can help categorize projects into different difficulty levels."
+            "data": "# Estimating Project Difficulty\n\nWhen estimating project difficulty, consider the following factors:\n\n- **Complexity**: Some projects are 'objectively' more complex than others. A project with one or few components have less dependencies and less code associated with ith. But...\n- **Team complementarity**: Complexity depends on the different sets of expertise on a team. The same component can be written such that it is simpler for more experienced individuals\n- **Iteration loops**: Some aspect of the projects cannot be known in advance. This is sometimes inevitable. "
           }
         ]
       },
@@ -43,7 +43,20 @@
         "content": [
           {
             "type": "markdown",
-            "data": "### Vermont's ticks\n\nThe Vermont Ticks project aims to track the spread of infectious diseases in Vermont, using sophisticated mechanistic and statistical models. The client is the MAP2LE team.\n\nThe MAP2LE team reached out to the RSE to help design an interactive map where it would be possible to look at probability of infections, given different states (the vector disease, weather, time of the year, etc). The RSE provided a draft of the interactive map that could be achieved, which was put in the draft sent for grant. This draft map was done in less than an hour.\n\nThe plan does not involve mentorship on the behalf of the RSE. Once the project has been funded, the RSE will collaborate with experienced researchers to develop that interactive map.\n\nAs a product, this map is estimated to be fairly easy to do, given what has been agreed in the research proposal (the current effort bet is around 5-10 RSE-hours for a working prototype, but can involve more effort if the map ought to be more polished).\n\nThe product seems easy enough to do because it is a single-web app page, including a map of Vermont with a few widgets (activity, vector type, model type). That said, the RSE identified two aspects of the project that could be more time consuming to implement, based on his experience. \n- Making sure the Application Programming Interface has access to hourly/daily weather data.\n- The API data should be then used in models developed by the team. The back and forth depending on the particular models used, and predictive performance in this case, could require some more efforts to fine-tune."
+            "data": "### Vermont's ticks\n\nThe Vermont Ticks project aims to track the spread of infectious diseases in Vermont, using sophisticated mechanistic and statistical models. The client is the MAP2LE team.\n\nThe MAP2LE team reached out to the RSE to help design an interactive map where it would be possible to look at probability of infections, given different states (the vector disease, weather, time of the year, etc). The RSE provided a draft of the interactive map that could be achieved, which was put in the draft sent for grant. This draft map was done in less than an hour."
+          },
+          {
+            "type": "image",
+            "data": {
+              "src": "images/MAP2LE_vermonticks.png",
+              "alt": "Diagram showing the academic open-source workflow",
+              "caption": "Figure 1: Draft of the deliverable.",
+              "width": 500
+            }
+          },
+          {
+            "type": "markdown",
+            "data": "The plan does not involve mentorship on the behalf of the RSE. Once the project has been funded, the RSE will collaborate with experienced researchers to develop that interactive map.\n\nAs a product, this map is estimated to be fairly easy to do, given what has been agreed in the research proposal (the current effort bet is around 5-10 RSE-hours for a working prototype, but can involve more effort if the map ought to be more polished).\n\nThe product seems easy enough to do because it is a single-web app page, including a map of Vermont with a few widgets (activity, vector type, model type). That said, the RSE identified two aspects of the project that could be more time consuming to implement, based on his experience. \n- Making sure the Application Programming Interface has access to hourly/daily weather data.\n- The API data should be then used in models developed by the team. The back and forth depending on the particular models used, and predictive performance in this case, could require some more efforts to fine-tune."
           },
           {
             "type": "callout",

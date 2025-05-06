@@ -2,14 +2,27 @@
     import Markdown from 'svelte-exmarkdown';
     import { gfmPlugin } from 'svelte-exmarkdown/gfm';
     import Scrolly from './Scrolly.svelte';
-    
-    // Import the markdown data with references
+    import { insertReferenceMarkers, processContent, getGroupReferences } from '$lib/utils.js';
+    import { base } from '$app/paths';
+    // Import the markdown data
     import markdownData from './markdownData.json';
     
     // Initialize tracking state and plugins
     let currentGroup = $state(0);
     const plugins = [gfmPlugin()];
     
+    // Process image paths to handle SvelteKit paths
+    function getImagePath(src) {
+        if (!src) return '';
+        
+        // Add the base path if it exists
+        if (src.startsWith('/')) {
+            return `${base}${src}`;
+        }
+        
+        return src;
+    }
+
     // Group sections by their group property
     const groupMap = {};
     markdownData.sections.forEach(section => {
@@ -29,31 +42,20 @@
         };
     });
     
-    // Process markdown content to convert footnote references
-    function processMarkdown(content, groupReferences) {
-        // Build a map of references for this group
-        const refMap = new Map();
-        groupReferences.forEach(ref => {
-            refMap.set(ref.id, ref.citation);
-        });
-        
-        // Replace all footnote references with superscript links
-        let processed = content;
-        
-        return processed;
+    // Run the reference marker insertion after component is mounted
+    $effect(() => {
+        insertReferenceMarkers();
+    });
+    
+    // Handle image zoom functionality
+    let zoomedImage = $state(null);
+    
+    function openImageModal(image) {
+        zoomedImage = image;
     }
     
-    // Collect all references for a group
-    function getGroupReferences(group) {
-        const allRefs = [];
-        group.sections.forEach(section => {
-            if (section.references && section.references.length > 0) {
-                allRefs.push(...section.references);
-            }
-        });
-        
-        // Sort references by id
-        return allRefs.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    function closeImageModal() {
+        zoomedImage = null;
     }
 </script>
 
@@ -111,27 +113,51 @@
                 >
                     <section class="content-section">
                         {#if group.id === 'intro'}
-                            <!-- Render introduction as a single block -->
+                            <!-- Get all references for this group -->
+                            {@const groupRefs = getGroupReferences(group)}
+                            
+                            <!-- Render introduction content -->
                             {#each group.sections[0].content as block}
                                 {#if block.type === 'markdown'}
-                                    {@const groupRefs = getGroupReferences(group)}
-                                    {@const processedMd = processMarkdown(block.data, groupRefs)}
-                                    <Markdown md={processedMd} {plugins} />
+                                    <!-- Process the content -->
+                                    {@const processedContent = processContent(block.data, group.sections[0].references || [])}
+                                    <Markdown md={processedContent} {plugins} />
                                 {:else if block.type === 'callout'}
                                     <div class="callout {block.data.type}">
                                         <strong>{block.data.icon} {block.data.title}: </strong> 
                                         {block.data.content}
                                     </div>
+                                {:else if block.type === 'image'}
+                                    <figure class="figure">
+                                        <div class="image-container">
+                                            <img 
+                                                src={block.data.src} 
+                                                alt={block.data.alt} 
+                                                style={`max-width: ${block.data.width}px;`}
+                                                onclick={() => openImageModal(block.data)}
+                                            />
+                                            <button class="zoom-button" onclick={() => openImageModal(block.data)}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="11" cy="11" r="8"></circle>
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                    <line x1="11" y1="8" x2="11" y2="14"></line>
+                                                    <line x1="8" y1="11" x2="14" y2="11"></line>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        {#if block.data.caption}
+                                            <figcaption>{block.data.caption}</figcaption>
+                                        {/if}
+                                    </figure>
                                 {/if}
                             {/each}
                             
                             <!-- Render references for the introduction -->
-                            {@const introRefs = getGroupReferences(group)}
-                            {#if introRefs.length > 0}
+                            {#if groupRefs.length > 0}
                                 <div id="intro-references" class="references">
                                     <h2>References</h2>
                                     <ol class="reference-list">
-                                        {#each introRefs as ref}
+                                        {#each groupRefs as ref}
                                             <li id={`ref-${ref.id}`}>
                                                 {ref.citation} 
                                                 <a href={`#ref-src-${ref.id}`} class="back-link">↩</a>
@@ -141,31 +167,56 @@
                                 </div>
                             {/if}
                         {:else}
-                            <!-- Render estimation sections in a unified block with anchors -->
+                            <!-- Get all references for this group -->
+                            {@const groupRefs = getGroupReferences(group)}
+                            
+                            <!-- Render estimation sections in a unified block -->
                             {#each group.sections as section}
                                 <div id={section.id} class="section-anchor">
                                     {#each section.content as block}
                                         {#if block.type === 'markdown'}
-                                            {@const groupRefs = getGroupReferences(group)}
-                                            {@const processedMd = processMarkdown(block.data, groupRefs)}
-                                            <Markdown md={processedMd} {plugins} />
+                                            <!-- Process the content -->
+                                            {@const processedContent = processContent(block.data, section.references || [])}
+                                            <Markdown md={processedContent} {plugins} />
                                         {:else if block.type === 'callout'}
                                             <div class="callout {block.data.type}">
                                                 <strong>{block.data.icon} {block.data.title}: </strong> 
                                                 {block.data.content}
                                             </div>
+                                        {:else if block.type === 'image'}
+                                            {@const imgSrc = getImagePath(block.data.src)}
+                                            <figure class="figure">
+                                                <div class="image-container">
+                                                    <img 
+                                                        src={imgSrc} 
+                                                        alt={block.data.alt} 
+                                                        style={`max-width: ${block.data.width}px;`}
+                                                        onclick={() => openImageModal(block.data)}
+                                                    />
+                                                    <button class="zoom-button" onclick={() => openImageModal(block.data)}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <circle cx="11" cy="11" r="8"></circle>
+                                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                            <line x1="11" y1="8" x2="11" y2="14"></line>
+                                                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                {#if block.data.caption}
+                                                    <figcaption>{block.data.caption}</figcaption>
+                                                {/if}
+                                            </figure>
                                         {/if}
                                     {/each}
                                 </div>
                             {/each}
                             
                             <!-- Render references for the estimation group -->
-                            {@const estRefs = getGroupReferences(group)}
-                            {#if estRefs.length > 0}
+                            {#if groupRefs.length > 0}
                                 <div id="est-references" class="references">
                                     <h2>References</h2>
                                     <ol class="reference-list">
-                                        {#each estRefs as ref}
+                                        {#each groupRefs as ref}
                                             <li id={`ref-${ref.id}`}>
                                                 {ref.citation} 
                                                 <a href={`#ref-src-${ref.id}`} class="back-link">↩</a>
@@ -180,6 +231,19 @@
             {/each}
         </Scrolly>
     </main>
+    
+    <!-- Image modal for zoomed view -->
+    {#if zoomedImage}
+        <div class="modal-backdrop" onclick={closeImageModal}>
+            <div class="modal-content" onclick={e => e.stopPropagation()}>
+                <button class="close-button" onclick={closeImageModal}>×</button>
+                <img src={zoomedImage.src} alt={zoomedImage.alt} class="modal-image" />
+                {#if zoomedImage.caption}
+                    <div class="modal-caption">{zoomedImage.caption}</div>
+                {/if}
+            </div>
+        </div>
+    {/if}
 </div>
 
 <style>
@@ -222,6 +286,120 @@
         scroll-margin-top: 2rem;
     }
     
+    /* Figure and image styling */
+    .figure {
+        margin: 2rem 0;
+        text-align: center;
+    }
+    
+    .image-container {
+        position: relative;
+        display: inline-block;
+        margin: 0 auto;
+        line-height: 0;
+    }
+    
+    .figure img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+    }
+    
+    .figure img:hover {
+        transform: scale(1.01);
+    }
+    
+    figcaption {
+        margin-top: 0.75rem;
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-style: italic;
+    }
+    
+    .zoom-button {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        color: #4b5563;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .image-container:hover .zoom-button {
+        opacity: 1;
+    }
+    
+    /* Modal styling */
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        backdrop-filter: blur(2px);
+    }
+    
+    .modal-content {
+        position: relative;
+        background: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow: auto;
+    }
+    
+    .close-button {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        font-size: 1.5rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-image {
+        max-width: 100%;
+        max-height: calc(90vh - 6rem);
+        object-fit: contain;
+    }
+    
+    .modal-caption {
+        margin-top: 1rem;
+        text-align: center;
+        font-style: italic;
+        color: #4b5563;
+    }
+    
+    /* Callout styling */
     .callout {
         margin: 1.5rem 0;
         padding: 1rem 1.25rem;
@@ -268,6 +446,22 @@
         font-size: 0.8rem;
         color: #3b82f6;
         text-decoration: none;
+    }
+    
+    /* Reference markers */
+    :global(.ref-marker) {
+        font-size: 0.7rem;
+        vertical-align: super;
+    }
+    
+    :global(.ref-marker a) {
+        color: #2563eb;
+        text-decoration: none;
+        padding: 0 1px;
+    }
+    
+    :global(.ref-marker a:hover) {
+        text-decoration: underline;
     }
     
     /* Table of Contents */
@@ -318,9 +512,9 @@
         background-color: #f3f4f6;
     }
     
-    /* .group.active button {
+    .group.active button {
         color: #2563eb;
-    } */
+    }
     
     /* Subgroup styling */
     .subgroup {
@@ -343,18 +537,6 @@
         text-decoration: none;
     }
     
-    /* Superscript styling for references */
-    :global(sup a) {
-        text-decoration: none;
-        color: #2563eb;
-        font-weight: 500;
-        padding: 0 0.1rem;
-    }
-    
-    :global(sup a:hover) {
-        text-decoration: underline;
-    }
-    
     /* Responsive */
     @media (max-width: 920px) {
         .container {
@@ -367,6 +549,11 @@
         
         main {
             padding: 1rem;
+        }
+        
+        .modal-content {
+            max-width: 95vw;
+            padding: 0.75rem;
         }
     }
 </style>
