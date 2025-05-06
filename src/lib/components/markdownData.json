@@ -7,7 +7,21 @@
         "content": [
           {
             "type": "markdown",
-            "data": "# OSPO in Academia\n\nMuch has been written on the technical side of making scientific free/open-source software; performant code, important licensing, building reproducible data pipeline, and so on. \n\nBut academic FOSS is more than that; it is about the banality of FOSS. How projects can get out of hand. How taking the time of building reproducible pipeline might get in the way of publishing papers. Dealing with institutional inertia, even though everybody might be on board with open source.\n\nWe identify key challenges:\n- How can we best spread best coding practices, given the above considerations\n- What should we adapt from industry, but perhaps more importantly, what not to bring from industry\n- Building sustainable practices in an academic environment"
+            "data": "# OSPO in Academia\n\nMuch has been written on the technical side of making scientific free/open-source software; performant code, important licensing, building reproducible data pipeline, and so on. \n\nBut academic FOSS is more than that; it is about the banality of FOSS. How projects can get out of hand. How taking the time of building reproducible pipeline might get in the way of publishing papers. Dealing with institutional inertia, even though everybody might be on board with open source.\n\nWe identify key challenges:\n- How can we best spread best coding practices, given the above considerations\n- What should we adapt from industry, but perhaps more importantly, what not to bring from industry\n- Building sustainable practices in an academic environment\n- ..."
+          }
+        ],
+        "references": [
+          {
+            "id": "1",
+            "citation": "The Turing Way Community. (2022). The Turing Way: A handbook for reproducible, ethical and collaborative research (1.0.2). Zenodo. DOI The Turing Way Community (2025)."
+          },
+          {
+            "id": "2",
+            "citation": "OpenSciency Contributors (2023, February 22). Opensciency - A core open science curriculum by and for the research community. Zenodo. DOI 10.5281/zenodo.7392118"
+          },
+          {
+            "id": "3",
+            "citation": "Scopatz, A., Huff, K. D. (2015). Effective Computation in Physics: Field Guide to Research with Python. Japan: O'Reilly Media."
           }
         ]
       },

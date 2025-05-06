@@ -3,7 +3,7 @@
     import { gfmPlugin } from 'svelte-exmarkdown/gfm';
     import Scrolly from './Scrolly.svelte';
     
-    // Import the markdown data
+    // Import the markdown data with references
     import markdownData from './markdownData.json';
     
     // Initialize tracking state and plugins
@@ -28,6 +28,33 @@
             sections
         };
     });
+    
+    // Process markdown content to convert footnote references
+    function processMarkdown(content, groupReferences) {
+        // Build a map of references for this group
+        const refMap = new Map();
+        groupReferences.forEach(ref => {
+            refMap.set(ref.id, ref.citation);
+        });
+        
+        // Replace all footnote references with superscript links
+        let processed = content;
+        
+        return processed;
+    }
+    
+    // Collect all references for a group
+    function getGroupReferences(group) {
+        const allRefs = [];
+        group.sections.forEach(section => {
+            if (section.references && section.references.length > 0) {
+                allRefs.push(...section.references);
+            }
+        });
+        
+        // Sort references by id
+        return allRefs.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    }
 </script>
 
 <div class="container">
@@ -56,6 +83,17 @@
                                     </a>
                                 </li>
                             {/each}
+                            <li class="section">
+                                <a 
+                                    href="#est-references"
+                                    onclick={(e) => {
+                                        e.preventDefault();
+                                        document.getElementById('est-references')?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                >
+                                    References
+                                </a>
+                            </li>
                         </ul>
                     {/if}
                 </li>
@@ -71,12 +109,14 @@
                     class="group-content" 
                     class:active={currentGroup === groupIndex}
                 >
-                    {#if group.id === 'intro'}
-                        <!-- Render introduction as a single block -->
-                        <section class="content-section">
+                    <section class="content-section">
+                        {#if group.id === 'intro'}
+                            <!-- Render introduction as a single block -->
                             {#each group.sections[0].content as block}
                                 {#if block.type === 'markdown'}
-                                    <Markdown md={block.data} {plugins} />
+                                    {@const groupRefs = getGroupReferences(group)}
+                                    {@const processedMd = processMarkdown(block.data, groupRefs)}
+                                    <Markdown md={processedMd} {plugins} />
                                 {:else if block.type === 'callout'}
                                     <div class="callout {block.data.type}">
                                         <strong>{block.data.icon} {block.data.title}: </strong> 
@@ -84,15 +124,31 @@
                                     </div>
                                 {/if}
                             {/each}
-                        </section>
-                    {:else}
-                        <!-- Render estimation sections in a unified block with anchors -->
-                        <section class="content-section">
+                            
+                            <!-- Render references for the introduction -->
+                            {@const introRefs = getGroupReferences(group)}
+                            {#if introRefs.length > 0}
+                                <div id="intro-references" class="references">
+                                    <h2>References</h2>
+                                    <ol class="reference-list">
+                                        {#each introRefs as ref}
+                                            <li id={`ref-${ref.id}`}>
+                                                {ref.citation} 
+                                                <a href={`#ref-src-${ref.id}`} class="back-link">↩</a>
+                                            </li>
+                                        {/each}
+                                    </ol>
+                                </div>
+                            {/if}
+                        {:else}
+                            <!-- Render estimation sections in a unified block with anchors -->
                             {#each group.sections as section}
                                 <div id={section.id} class="section-anchor">
                                     {#each section.content as block}
                                         {#if block.type === 'markdown'}
-                                            <Markdown md={block.data} {plugins} />
+                                            {@const groupRefs = getGroupReferences(group)}
+                                            {@const processedMd = processMarkdown(block.data, groupRefs)}
+                                            <Markdown md={processedMd} {plugins} />
                                         {:else if block.type === 'callout'}
                                             <div class="callout {block.data.type}">
                                                 <strong>{block.data.icon} {block.data.title}: </strong> 
@@ -102,8 +158,24 @@
                                     {/each}
                                 </div>
                             {/each}
-                        </section>
-                    {/if}
+                            
+                            <!-- Render references for the estimation group -->
+                            {@const estRefs = getGroupReferences(group)}
+                            {#if estRefs.length > 0}
+                                <div id="est-references" class="references">
+                                    <h2>References</h2>
+                                    <ol class="reference-list">
+                                        {#each estRefs as ref}
+                                            <li id={`ref-${ref.id}`}>
+                                                {ref.citation} 
+                                                <a href={`#ref-src-${ref.id}`} class="back-link">↩</a>
+                                            </li>
+                                        {/each}
+                                    </ol>
+                                </div>
+                            {/if}
+                        {/if}
+                    </section>
                 </div>
             {/each}
         </Scrolly>
@@ -142,9 +214,9 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     
-    .group-content.active .content-section {
-        border-left-color: #ffffff;
-    }
+    /* .group-content.active .content-section {
+        border-left-color: #3b82f6;
+    } */
     
     .section-anchor {
         scroll-margin-top: 2rem;
@@ -162,6 +234,41 @@
     .callout.hint { border-color: #3b82f6; background-color: #dbeafe; }
     .callout.info { border-color: #0ea5e9; background-color: #e0f2fe; }
     .callout.example { border-color: #84cc16; background-color: #ecfccb; }
+    
+    /* References styling */
+    .references {
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        scroll-margin-top: 2rem;
+    }
+    
+    .references h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .reference-list {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+    
+    .reference-list li {
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #4b5563;
+    }
+    
+    .back-link {
+        display: inline-block;
+        margin-left: 0.5rem;
+        font-size: 0.8rem;
+        color: #3b82f6;
+        text-decoration: none;
+    }
     
     /* Table of Contents */
     .toc {
@@ -212,7 +319,7 @@
     }
     
     /* .group.active button {
-        color: #bcbcbc;
+        color: #2563eb;
     } */
     
     /* Subgroup styling */
@@ -234,6 +341,18 @@
     .section a:hover {
         background-color: #f3f4f6;
         text-decoration: none;
+    }
+    
+    /* Superscript styling for references */
+    :global(sup a) {
+        text-decoration: none;
+        color: #2563eb;
+        font-weight: 500;
+        padding: 0 0.1rem;
+    }
+    
+    :global(sup a:hover) {
+        text-decoration: underline;
     }
     
     /* Responsive */

@@ -10,7 +10,7 @@
     
     <footer>
         <div class="container">
-            <p>© {new Date().getFullYear()} University Research Program. Released under MIT License.</p>
+            <p>© {new Date().getFullYear()} VERSO. Released under MIT License.</p>
         </div>
     </footer>
 </div>
