@@ -5,8 +5,8 @@
     import { processContent } from '$lib/utils.js';
     import { base } from '$app/paths';
     import Toc from './TOC.svelte';
-    // Import the markdown data
-    import markdownData from './MarkdownData.json';
+    
+    import markdownData from './markdownData.json';
     import BubbleChart from './BubbleChart.svelte';
     
     // Initialize tracking state and plugins
@@ -234,68 +234,21 @@
         overflow-y: auto;
     }
     
-    .toc h2 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-top: 0;
-        margin-bottom: 1rem;
-        color: #111827;
-    }
-    
-    .toc ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-    
     .section-item {
         margin-bottom: 0.25rem;
     }
     
-    .section-item a {
-        display: block;
-        padding: 0.375rem 0.5rem;
-        font-size: 0.9375rem;
-        color: #4b5563;
-        text-decoration: none;
-        border-radius: 0.25rem;
-        transition: all 0.2s ease;
-    }
-    
-    .section-item a:hover {
-        background-color: #f3f4f6;
-        color: #2563eb;
-    }
-    
-    .section-item.active > a {
-        color: #2563eb;
-        font-weight: 500;
-    }
-    
-    /* TOC indentation */
-    .toc-level-1 > .section-item > a {
-        font-weight: 600;
-    }
     
     .toc-level-2 {
         padding-left: 1rem;
         margin-top: 0.25rem;
         margin-bottom: 0.5rem;
     }
-    
-    .toc-level-2 > .section-item > a {
-        font-size: 0.875rem;
-    }
-    
+        
     .toc-level-3 {
         padding-left: 1rem;
         margin-top: 0.25rem;
         margin-bottom: 0.25rem;
-    }
-    
-    .toc-level-3 > .section-item > a {
-        font-size: 0.8125rem;
-        padding: 0.25rem 0.5rem;
     }
     
     /* Responsive */

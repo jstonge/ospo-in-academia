@@ -263,18 +263,7 @@
     z-index: 1000;
   }
   
-  .sidebar-tooltip h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #111827;
-    position: relative;
-    top: 0;
-    background: white;
-    padding: 5px 0;
-    z-index: 5;
-  }
-
+  
   .tooltip-category {
     margin: 0 0 8px 0;
     font-size: 0.8rem;
