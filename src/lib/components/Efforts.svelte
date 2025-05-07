@@ -1,8 +1,11 @@
 <script>
     import { processContent, getGroupReferences } from '$lib/utils.js';
     import Markdown from 'svelte-exmarkdown';
-
+    import BubbleChart from '$lib/components/BubbleChart.svelte';
+    import data from "./data.js";
+    
     let { group, plugins } = $props();
+    
     // Function to handle image paths
     function getImagePath(src) {
         if (!src) return '';
@@ -10,7 +13,7 @@
     }
 
 </script>
-<!-- Estimation sections -->
+
 {#each group.sections as section}
 <div id={section.id} class="section-anchor">
     {#each section.content as block}
@@ -38,6 +41,8 @@
     {/each}
 </div>
 {/each}
+
+<!-- <BubbleChart {data} /> -->
 
 <!-- Estimation references -->
 {#if getGroupReferences(group).length > 0}
@@ -148,18 +153,7 @@
         color: #4b5563;
     }
     
-    /* Table of Contents */
-    .toc {
-        position: sticky;
-        top: 2rem;
-        align-self: start;
-        padding: 1.5rem;
-        height: max-content;
-        background: white;
-        border-radius: 0.5rem;
-    }
-    
-    
+
     /* Subgroup styling */
     .subgroup {
         padding-left: 1rem;
@@ -171,14 +165,6 @@
         .container {
             grid-template-columns: 1fr;
         }
-        
-        .toc {
-            display: none;
-        }
-        
-        .modal-content {
-            max-width: 95vw;
-            padding: 0.75rem;
-        }
+
     }
 </style>

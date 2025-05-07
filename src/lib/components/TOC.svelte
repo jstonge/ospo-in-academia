@@ -8,6 +8,7 @@
     <h2>Contents</h2>
     <ul>
         {#each groups as group, i}
+            {#if group.level == 1 } 
             <li class="group" class:active={currentGroup === i}>
                 <button onclick={() => document.getElementById(group.id)?.scrollIntoView({ behavior: 'smooth' })}>
                     {group.title}
@@ -43,6 +44,7 @@
                     </ul>
                 {/if}
             </li>
+            {/if}
         {/each}
     </ul>
 </aside>

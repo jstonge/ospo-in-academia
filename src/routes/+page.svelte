@@ -7,7 +7,7 @@
     <div class="container">
         <MarkdownViewer />
     </div>
-    
+
     <footer>
         <div class="container">
             <p>© {new Date().getFullYear()} VERSO. Released under MIT License.</p>
@@ -45,3 +45,4 @@
         font-size: 0.875rem;
     }
 </style>
+
