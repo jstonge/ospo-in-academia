@@ -50,9 +50,8 @@
 </script>
 
 <div class="app">
-    
     <div class="container">
-        <Toc groups={sections} currentGroup={currentSection} />
+        <!-- <Toc groups={sections} currentGroup={currentSection} /> -->
     
         <main>
             <Scrolly bind:value={currentSection} top={100} bottom={100}>
@@ -108,7 +107,7 @@
     
     .container {
         display: grid;
-        grid-template-columns: 260px 1fr;
+        /* grid-template-columns: 260px 1fr; */
         max-width: 1200px;
         margin: 0 auto;
         gap: 3rem;

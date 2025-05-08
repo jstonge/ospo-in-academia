@@ -118,15 +118,15 @@
           selected = null;
         } else if (scrollyIndex === 0) {
           selected = nodes.find(node => node.id === 'vermontticks');
-          targetX = centerX * 1.5;
+          targetX = centerX * 1.75;
 
         } else if (scrollyIndex === 1) {
           selected = nodes.find(node => node.id === 'vermontticks');
-          targetX = centerX * 1.5;
+          targetX = centerX * 1.75;
           
         }  else if (scrollyIndex === 2) {
           selected = nodes.find(node => node.id === 'vermontlivability');
-          targetX = centerX * 1.5;
+          targetX = centerX * 1.75;
       }
       
       // Adjust simulation based on selection state
@@ -360,7 +360,7 @@
   
   .legend {
     position: absolute;
-    bottom: 10px;
+    bottom: -20px;
     right: 10px; /* Changed from left: 10px to right: 10px */
     background: white;
     border: 1px solid #ddd;
