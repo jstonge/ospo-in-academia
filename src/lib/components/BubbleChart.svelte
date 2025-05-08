@@ -7,7 +7,7 @@
     import { processContent } from '$lib/utils.js';
     
     // Import the content data
-    let { markdownData } = $props();
+    let { scrollyIndex, markdownData } = $props();
     
     // Initialize plugins for markdown rendering
     const plugins = [gfmPlugin()];
@@ -100,7 +100,7 @@
       nodes = simulation.nodes();
     });
   
-    // Use $effect for simulation updates
+    // Modify your $effect section to handle specific scrollyIndex values
     $effect(() => {
       // All bubbles cluster together in the center
       const centerX = innerWidth / 2;
@@ -109,6 +109,25 @@
       // If a node is selected, give it more emphasis
       let collideStrength = 0.7;
       let centerStrength = 0.1;
+
+      // Calculate target X position based on scrollyIndex
+      let targetX = centerX; // Default position
+      
+      // Handle scrollyIndex changes
+      if (scrollyIndex === undefined) {
+          selected = null;
+        } else if (scrollyIndex === 0) {
+          selected = nodes.find(node => node.id === 'vermontticks');
+          targetX = centerX * 1.5;
+
+        } else if (scrollyIndex === 1) {
+          selected = nodes.find(node => node.id === 'vermontticks');
+          targetX = centerX * 1.5;
+          
+        }  else if (scrollyIndex === 2) {
+          selected = nodes.find(node => node.id === 'vermontlivability');
+          targetX = centerX * 1.5;
+      }
       
       // Adjust simulation based on selection state
       if (selected) {
@@ -116,17 +135,17 @@
         collideStrength = 1;
         centerStrength = 0.2;
       }
-  
+
       simulation
-        .force("center", forceCenter(centerX, centerY).strength(centerStrength))
-        .force("x", forceX(centerX).strength(0.05))
+        .force("center", forceCenter(targetX, centerY).strength(centerStrength))
+        .force("x", forceX(targetX).strength(0.05))
         .force("y", forceY(centerY).strength(0.05))
         .force("collide", forceCollide().radius(d => getRadius(d) + 3).strength(collideStrength))
         .alpha(0.3)
         .alphaDecay(0.005)
         .restart();
     });
-  
+
     // Handle circle click
     function handleCircleClick(node, event) {
         event.stopPropagation();
@@ -251,10 +270,10 @@
   .sidebar-tooltip {
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     width: 500px;
-    height: 80vh;
-    margin-top: 10vh;
+    height: 100vh;
+    /* margin-top: 45vh; */
     background: white;
     border-left: 1px solid #ddd;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
@@ -342,13 +361,14 @@
   .legend {
     position: absolute;
     bottom: 10px;
-    left: 10px;
+    right: 10px; /* Changed from left: 10px to right: 10px */
     background: white;
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 8px 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
+  
   
   .legend h4 {
     margin: 0 0 5px 0;
