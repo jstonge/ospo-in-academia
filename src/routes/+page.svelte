@@ -60,9 +60,8 @@
                     {#if section.level === 1}
                         {#if section.id === 'intro'}
                             <MarkdownRenderer {section} />
-                        {:else if section.id === 'work-with-me'} 
-                            
-                        <div class="p-4">
+                        <!-- {:else if section.id === 'work-with-me'}  -->
+                        <!-- <div class="p-4">
                             <Toggle 
                                 bind:checked={isShortStatement} 
                                 label={isShortStatement ? "Show long statement" : "Show short Statement"}
@@ -72,7 +71,7 @@
                             <MarkdownRenderer section={ShortStatement} />
                         {:else}
                             <MarkdownRenderer {section} />
-                        {/if}
+                        {/if} -->
                         {:else if section.id === 'estimating'} 
                             <Estimating {section} {index} {markdownData} {currentSection}/>
                         {/if}
