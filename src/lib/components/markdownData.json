@@ -7,7 +7,7 @@
       "content": [
         {
           "type": "markdown",
-          "data": "# OSPO in Academia\n\nMuch has been written on the technical side of making scientific free/open-source software; performant code, important licensing, building reproducible data pipeline, and so on. \n\nBut academic FOSS is more than that; it is about the banality of FOSS. How projects can get out of hand. How taking the time of building reproducible pipeline might get in the way of publishing papers. Dealing with institutional inertia, even though everybody might be on board with open source.\n\nWe identify key challenges:\n- How can we best spread best coding practices, given the above considerations\n- What should we adapt from industry, but perhaps more importantly, what not to bring from industry\n- Building sustainable practices in an academic environment\n- ..."
+          "data": "# Open-Source Programming Offices (OSPOs) in Academia\n\nMuch has been written on the technical side of making scientific free/open-source software (F/OSS); performant code, important licensing, building reproducible data pipeline, and so on. \n\nBut academic F/OSS is more than that; it is about the banality of evil of integrating F/OSS to research projects. How projects can get out of hand. How taking the time of building reproducible pipeline might get in the way of publishing papers. Dealing with institutional inertia, even though everybody might be on board with open source.\n\nWe identify key challenges:\n- How can we best spread best coding practices, given the above considerations\n- What should we adapt from industry, but perhaps more importantly, what not to bring from industry\n- Building sustainable practices in an academic environment\n- ..."
         }
       ],
       "references": [
@@ -26,13 +26,44 @@
       ]
     },
     {
+      "id": "work-with-me",
+      "title": "Working with a research software engineer",
+      "level": 1,
+      "content": [
+        {
+          "type": "markdown",
+          "data": "## Working with me"
+        },
+        {
+          "type": "markdown",
+          "data": "My role as a research software engineer (RSE) is best described as multifaceted.\n\nRSEs typically work in open-source programming offices (OSPOs), promoting best programming practices to advance research ([this link](https://us-rse.org/about/what-is-an-rse/), the [uk version](https://society-rse.org/about/)). This includes writing computer programs that are reproducible, scalable, and generally do what you think they do. That is, how do you do more with less such that it can be reproduced, and if necessary further modified, in the long run. Anybody who ever wrote code knows it is harder than it seems.\n\nRSEs promote various aspects of free and open-source software (F/OSS) such as adopting the right license for your project, using tools designed for collaboration, or improving project design (good filenaming, outreach, etc). Creating an OSPO has been shown to facilitate the internalization of programming practices and values in myriad ways.\n\nAs a _research_ software engineer, I emphasize how best programming practices improve scientific work. For instance, by meeting challenges like:\n\n- _Data collection_: Maybe you want different people to send data your way? Building a front-end interface connected to a database is a great way to build datasets.\n- _Data labeling_: Labeling data is key to assess model performance. How can you have groups labeling data effectively? This is trickier than it first appears, as optimizing information content of data labels is challenging.\n- _Model-specific pipelines_: Working with Bayesian statistics is different than working with sklearn models. Understanding how methods relate to data helps me find ways open-source practices can help research groups save time.\n\nAs an RSE coming from academia, I have unique modeling expertise in natural language processing, open-source Large Language Models, Bayesian statistics, network analysis, and more. This helps me understand the needs of specific research groups.\n\nThe RSE job can be as straightforward as delivering shiny deliverables—interactive maps or web applications with bells and whistles—designed to please stakeholders and funding agencies. These tools help research reach audiences beyond academia. Given my experience, I build these deliverables more professionally and in less time than most students or interns can (though some students these days can be pretty darned good at coding)."
+        },
+        {
+          "type": "markdown",
+          "data": "#### But what is collaboration?\n\nBut what excites me most about my role is the ability to **foster collaboration within and across diverse teams to support fun, impactful, and data-driven research**. To me, the real challenge isn't just technical—it's getting people to see how open-source practices can address science's Achilles' heel: collaboration.\n\nI say that half-jokingly. Of course, science is 'collaborative'—we cite each other, build communities around shared ideas, and contribute to what we see as the greater good. But for computational work, researchers still mostly write code for themselves. Why?\n\nOne reason is that researchers used to be hackers who simply made their code work. Sometimes, that's all you need. But this approach is individualistic—only you can work on that code, and even future-you might be unhappy about it. Code was, as it should be, secondary to the research.\n\nAnother reason is that academia incentivizes individualistic behaviors. Achievements are measured personally—citation metrics, awards, grants—not how well you write code for others. We attribute discoveries to specific individuals (even though that's often misleading), and we admire those who publish prolifically and secure major funding. We cite each other, but citations are often strategic. This isn't all bad—developing strong individual capabilities is worth striving for. Still, research shows that groups of strong collaborators consistently produce more creative work than collections of highly capable but uncooperative individuals."
+        },
+        {
+          "type": "markdown",
+          "data": "#### Building Bridges\n\nIntegrating F/OSS into research—not just the software, but the underlying values—can help address this tension between individuals and groups. From the beginning, F/OSS has reconciled strong individual egos with effective teamwork. In this light, my view of the RSE role isn't just about programming languages and libraries. It's about building bridges between academia's individualistic incentives and the shared values of the open-source movement.\n\nThis is a nontrivial task. How do we help newcomers—researchers who've only recently started using F/OSS—understand what open-source ethos can bring to their work? When bringing me on board, I instill the idea that improving one's ability to integrate F/OSS directly connects to enjoying it. Consider when you hit a frustrating code bug. F/OSS natives might seek help in forums, but they also enjoy discovering _why_ the bug exists. If code is merely an obstacle, you'll miss the insights gained from investigating the systems powering modern science.\n\nWhat intrigues me as an RSE is how open-source software can be tailored to specific team compositions. How do we reconcile the collaborative nature of open-source work with scientific endeavors that often incentivize individual achievements? This tension is central to the RSE role: how can we make science more collaborative within institutional frameworks that prioritize personal advancement?"
+        },
+        {
+          "type": "markdown",
+          "data": "#### A Humanist Perspective\n\nAs a humanities scholar, I believe that computational representations are not neutral. Computers excel with bits, but we struggle to truly represent more nuanced concepts like the meaning of a story, or emotions. We have only simplified models that may or may not depict reality (mostly not, but hey, maybe we are getting there). I describe myself as a 'humanist-inclined RSE', a term I just made up to highlight that our computational tools for studying human and living systems are still evolving."
+        },
+        {
+          "type": "markdown",
+          "data": "#### Setting Expectations\n\nThe RSE position itself testifies to ongoing changes. As an RSE, I help others adopt tools and technologies that transform collaborative work. The precise definition remains fluid—and purposefully so. However, there are clear boundaries:\n\n- **The RSE is not a PhD student**: I typically don't lead research question development, but instead facilitate others' research design. While not developing research questions full-time, I remain a part-time researcher capable of critically analyzing research potential.\n- **The RSE's role should be agreed upon in proposals**: To avoid frustration, my degree of involvement should be clear from the start. This doesn't remove flexibility—my expertise can be applied through mentorship, technical help, or methodological guidance. If needs change, we can adjust.\n- **Case studies provide guidance**: As RSE is an emerging role, it can be hard to envision exactly what I do. Consulting example projects helps understand what's easier or harder, how projects can go sideways, etc.\n- **Sustainability Planning**: How can we ensure that the software delivered can be maintained after the RSE direct involvement ends, e.g. through documentation, knowledge transfer, or training.\n\nWorking with me means navigating a fluid boundary—I'm a research collaborator committed to delivering project outcomes for stakeholders while bringing open-source values that make research more collaborative, reproducible, and impactful."
+        }
+      ]
+    },
+    {
       "id": "estimating",
       "title": "Estimating Project Difficulty",
       "level": 1,
       "content": [
         {
           "type": "markdown",
-          "data": "# Estimating Project Difficulty\n\nWhen estimating project difficulty, consider the following factors:\n\n- **Complexity**: Some projects are 'objectively' more complex than others. A project with one or few components have less dependencies and less code associated with ith. But...\n- **Team complementarity**: Complexity depends on the different sets of expertise on a team. The same component can be written such that it is simpler for more experienced individuals\n- **Iteration loops**: Some aspect of the projects cannot be known in advance. This is sometimes inevitable."
+          "data": "# Case studies in Estimating Project Difficulty\n\nWhen estimating project difficulty, consider the following factors:\n\n- **Complexity**: Some projects are 'objectively' more complex than others. A project with one or few components have less dependencies and less code associated with ith. But...\n- **Team complementarity**: Complexity depends on the different sets of expertise on a team. The same component can be written such that it is simpler for more experienced individuals\n- **Iteration loops**: Some aspect of the projects cannot be known in advance. This is sometimes inevitable."
         }
       ]
     },
@@ -153,18 +184,6 @@
       ]
     },
     {
-      "id": "transportation-medium",
-      "title": "Study of Traffic",
-      "level": 3,
-      "parentId": "medium",
-      "content": [
-        {
-          "type": "markdown",
-          "data": "### Study of Traffic\n\nProject to study traffic in Vermont, ended up including an interactive map showing statistical models. It involved backend and frontend work."
-        }
-      ]
-    },
-    {
       "id": "hard",
       "title": "Hard Projects",
       "level": 2,
@@ -189,8 +208,8 @@
       ]
     },
     {
-      "id": "transportation-hard",
-      "title": "Study of Traffic (Advanced)",
+      "id": "transportation",
+      "title": "Transportation study",
       "level": 3,
       "parentId": "hard",
       "content": [

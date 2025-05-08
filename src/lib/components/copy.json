@@ -1,0 +1,16 @@
+{
+    "steps": [
+    {
+      "type": "text",
+      "value": "This is a great description of the Vermont ticks example project."
+    },
+    {
+      "type": "text",
+      "value": "Perhaps we could a counterfactual using the traffic example, why this one is hard and not ticks"
+    },
+    {
+      "type": "text",
+      "value": "And more!"
+    }
+  ]
+}

@@ -41,6 +41,7 @@
 		]
 	},
 	"dependencies": {
+		"bits-ui": "^1.4.6",
 		"d3-array": "^3.2.4",
 		"d3-force": "^3.0.0",
 		"d3-scale": "^4.0.2",

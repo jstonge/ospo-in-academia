@@ -1,126 +1,85 @@
-<script lang="ts">
+<script>
+    
     import Markdown from 'svelte-exmarkdown';
     import { gfmPlugin } from 'svelte-exmarkdown/gfm';
-    import Scrolly from './Scrolly.svelte';
     import { processContent } from '$lib/utils.js';
     import { base } from '$app/paths';
-    import Toc from './TOC.svelte';
     
-    import markdownData from './markdownData.json';
-    import BubbleChart from './BubbleChart.svelte';
-    
-    // Initialize tracking state and plugins
-    let currentSection = $state(0);
+    let { section } = $props();
+
     const plugins = [gfmPlugin()];
-    
+
     // Function to handle image paths
     function getImagePath(src) {
         if (!src) return '';
         return src.startsWith('/') ? `${base}${src}` : src;
     }
-    
-    // Process sections for hierarchy and navigation
-    const sections = markdownData.sections;
-    
-    // Create a map of sections by level for the table of contents
-    const sectionsByLevel = {};
-    sections.forEach(section => {
-        if (!sectionsByLevel[section.level]) {
-            sectionsByLevel[section.level] = [];
-        }
-        sectionsByLevel[section.level].push(section);
-    });
-    
-    // Map for quick parent lookup
-    const sectionMap = {};
-    sections.forEach(section => {
-        sectionMap[section.id] = section;
-    });
-    
 </script>
 
-<div class="container">
-    <!-- Table of Contents -->
-    <Toc groups={sections} currentGroup={currentSection} />
-
-    <!-- Main Content - Only Level 1 Content, No Headers for Others -->
-    <main>
-        <Scrolly bind:value={currentSection} top={100} bottom={100}>
-            {#each sections as section, index}
-                {#if section.level === 1}
-                    <!-- Show full content for Level 1 sections -->
-                    <section 
-                        id={section.id} 
-                        class="content-section" 
-                        class:active={currentSection === index}
-                        class:level-1={true}
-                    >
-                        {#each section.content as block}
-                            {#if block.type === 'markdown'}
-                                <Markdown md={processContent(block.data, [])} {plugins} />
-                            {:else if block.type === 'callout'}
-                                <div class="callout {block.data.type}">
-                                    <strong>{block.data.icon} {block.data.title}: </strong> 
-                                    {block.data.content}
-                                </div>
-                            {:else if block.type === 'image'}
-                                <figure class="figure">
-                                    <div class="image-container">
-                                        <img 
-                                            src={getImagePath(block.data.src)} 
-                                            alt={block.data.alt} 
-                                            style={`max-width: ${block.data.width}px;`}
-                                        />
-                                    </div>
-                                    {#if block.data.caption}
-                                        <figcaption>{block.data.caption}</figcaption>
-                                    {/if}
-                                </figure>
-                            {/if}
-                        {/each}
-                    </section>
-                {:else}
-                    <!-- Invisible anchor for navigation only -->
-                    <div id={section.id} style="height: 0; overflow: hidden;"></div>
-                {/if}
-            {/each}
-            
-            <!-- Bubble Chart Visualization -->
-            <div class="visualization-container">
-                <p class="viz-description"><em>Hover over or click a bubble to explore section content. Size indicates content length, color represents category.</em></p>
-                <BubbleChart {markdownData}/>
-            </div>
-
-            <!-- References section -->
-            {#if sections.some(s => s.references?.length > 0)}
-                <section id="references" class="references">
-                    <h2>References</h2>
-                    <ol class="reference-list">
-                        {#each sections.flatMap(s => s.references || []) as ref}
-                            <li id={`ref-${ref.id}`}>
-                                {ref.citation}
-                            </li>
-                        {/each}
-                    </ol>
-                </section>
+<section 
+    id={section.id} 
+    class="content-section" 
+    class:level-1={true}
+    >
+    {#each section.content as block}
+            {#if block.type === 'markdown'}
+                <Markdown md={processContent(block.data, [])} {plugins} />
+            {:else if block.type === 'callout'}
+                <div class="callout {block.data.type}">
+                    <strong>{block.data.icon} {block.data.title}: </strong> 
+                    {block.data.content}
+                </div>
+            {:else if block.type === 'image'}
+                <figure class="figure">
+                    <div class="image-container">
+                        <img 
+                            src={getImagePath(block.data.src)} 
+                            alt={block.data.alt} 
+                            style={`max-width: ${block.data.width}px;`}
+                        />
+                    </div>
+                    {#if block.data.caption}
+                        <figcaption>{block.data.caption}</figcaption>
+                    {/if}
+                </figure>
             {/if}
-        </Scrolly>
-    </main>
-</div>
+    {/each}
+
+</section>
 
 
 <style>
+    .visualization-container {
+		/* width: 40%; */
+		/* height: 550px; */
+		position: sticky;
+		top: calc(50vh - 275px);
+		/* right: 5%; */
+		/* margin-left: auto; */
+	}
+
+    .spacer {
+		height: 75vh;
+	}
+
+    .step {
+		height: 80vh;
+		display: flex;
+		place-items: center;
+		justify-content: center;
+	}
+
+	
+	:global(.step .bold) {
+		font-family: var(--sans);
+	}
+
     .container {
         display: grid;
         grid-template-columns: 260px 1fr;
         max-width: 1200px;
         margin: 0 auto;
         gap: 3rem;
-    }
-    
-    main {
-        max-width: 720px;
-        padding: 2rem;
     }
     
     .content-section {
@@ -201,24 +160,10 @@
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     
-    .references h2 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-top: 0;
-        margin-bottom: 1rem;
-        color: #111827;
-    }
     
     .reference-list {
         margin: 0;
         padding-left: 1.5rem;
-    }
-    
-    .reference-list li {
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-        line-height: 1.5;
-        color: #4b5563;
     }
     
     /* Table of Contents */
@@ -260,11 +205,7 @@
         .toc {
             display: none;
         }
-        
-        main {
-            padding: 1rem;
-        }
-        
+
         .level-2 {
             margin-left: 1rem;
         }
