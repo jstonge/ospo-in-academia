@@ -67,7 +67,7 @@
 		box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
 		z-index: 10;
 		width: 40%;
-		transform: translateX(-60%);
+		transform: translateX(-20%);
 	}
 
 	.step.active p {
